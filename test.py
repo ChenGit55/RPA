@@ -20,9 +20,8 @@ def open_browser(url_start_path):
 ################################################################################################################################
 # Tela 1
 
-driver = open_browser("https://www.dominioweb.com.br/")
-
 try:
+    driver = open_browser("https://www.dominioweb.com.br/")
     tela_login = pyautogui.locateCenterOnScreen('tela_login.png')
     #credenciais
     user = 'usuarioteste@teste.com'
@@ -38,14 +37,9 @@ try:
     enter_btn.click() #clica no botão de entrar
     time.sleep(2)
 
-
 except:
     print(f"Error ao carregar")
     exit()
-
-# except pyautogui.ImageNotFoundException:
-#     print('TELA DE LOGIN NAO CARREGADA')
-#     exit()
 
 # Login concluído e abrindo o programa Domínio no computador
 pyautogui.press('winleft')
@@ -53,6 +47,8 @@ pyautogui.write('Domínio')
 pyautogui.press('enter')
 
 time.sleep(2)
+################################################################################################################################
+# Tela 2
 ################################################################################################################################
 # Tela 3
 
@@ -67,12 +63,11 @@ except:
 
  ################################################################################################################################
 # Tela 4
-# Janela de Login
-# Utilize as credenciais:
+
+user_manager = 'Gerente'
+password_manager = 'teste@123'
 
 try:
-    user_manager = 'Gerente'
-    password_manager = 'teste@123'
     tela_login_escrita_fiscal =  pyautogui.locateCenterOnScreen('login_escrita_fiscal.png')
     user_manager_input = pyautogui.locateCenterOnScreen('user_manager_input.png')
     pyautogui.click(user_manager_input)
@@ -83,24 +78,16 @@ try:
 
 except:
     print(f"Error ao carregar")
- ################################################################################################################################
+################################################################################################################################
 # Tela 5
-# Login realizado e programa Domínio dentro da área fiscal
-
-tela_escrita_fiscal =  pyautogui.locateCenterOnScreen('scrita_fiscal.png')
-time.sleep(2)
 ################################################################################################################################
 # Tela 6
-# Apertar f8 para abrir a janela de seleção de empresa
-# Escolher a opção código
-# Digitar o código da empresa com base na planilha
-# Ativar a empresa
 
 
-#abrir menu
 try:
     tela_escrita_fiscal =  pyautogui.locateCenterOnScreen('scrita_fiscal.png')
     for indice,linha in empresas.iterrows():
+        cod_er = linha['Código ER']
         pyautogui.press('f8')
 
         #seleciona a opcao Código
@@ -110,7 +97,7 @@ try:
         #selecionar e ativar a emrpesa
         cod_input = pyautogui.locateCenterOnScreen('cod_input.png')
         pyautogui.click(cod_input)
-        pyautogui.write(linha['Código ER'])
+        pyautogui.write(cod_er)
         pyautogui.shortcut('alt','a')
         pyautogui.press('enter')
         time.sleep(2)
@@ -130,21 +117,18 @@ pyautogui.press('m')
 time.sleep(2)
 ################################################################################################################################
  # Tela 8
-# Nessa tela, será feita a exportação do relatório referente à empresa ativada anteriormente
-# Alterar a competência conforme a planilha, alterar o caminho de onde será salvo e selecionar a opção Exportar
-# Caminho que deverá ser escrito (altere a palavra Teste para o código da empresa na planilha):
-# 	- M:\DCTF\Teste.RFB
 
-#seleciona e troca a competencia
 
 impostos_nao_calculados = pyautogui.locateCenterOnScreen('impostos_nao_calculados.png')
 try:
+
     comp_filed = pyautogui.locateCenterOnScreen('competencia.png')
     for indice,linha in empresas.iterrows():
         comp = linha['Competência']
         cod_er = linha['Código ER']
         empresa = linha['Empresa']
 
+        #seleciona e troca a competencia
         pyautogui.click(comp_filed)
         pyautogui.write(comp)
 
@@ -155,6 +139,9 @@ try:
         #seleciona o campo para digitar o caminho e digita o caminho
         path_filed = pyautogui.locateCenterOnScreen('caminho.png')
         pyautogui.write(save_path)
+
+        ################################################################################################################################
+        # Tela 09
 
         #exporta
         pyautogui.shortcut('alt','x')
@@ -172,14 +159,13 @@ except:
 
 ################################################################################################################################
 # Tela 10
-# Abrir o programa DCTF
 
+# Abrir o programa DCTF
 pyautogui.press('winleft')
 pyautogui.write('DCTF')
 pyautogui.press('enter')
 ################################################################################################################################
 # Tela 11
-# No menu superior, selecionar a opção Declaração e depois a opção Importar
 
 linha_DCTF = pyautogui.locateCenterOnScreen('linha_DCTF.png')
 campo_nome_arquivo = pyautogui.locateCenterOnScreen('campo_nome_do_arquivo.png')
