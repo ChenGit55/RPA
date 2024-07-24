@@ -20,7 +20,7 @@ def open_browser(url_start_path):
 ################################################################################################################################
 # Tela 1
 
-driver = open_browser("https://www.google.com.br/")
+driver = open_browser("https://www.dominioweb.com.br/")
 
 try:
     tela_login = pyautogui.locateCenterOnScreen('tela_login.png')
