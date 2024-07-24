@@ -1,35 +1,29 @@
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
 import pyautogui
 import pandas as pd
+
 
 empresas_arquivo = [["06/2024", 391, "Empresa teste 1", "123123123123123"],["03/2024", 292, "Empresa teste 2", "098098098098098"], ["05/2024", 148, "Empresa teste 3", "045045045000134"],]
 
 #abrindo arquivo
 empresas = pd.DataFrame(empresas_arquivo, columns=["Competência",'Código ER',"Empresa","CNPJ-CPF"] )
-cod_er = empresas['Código ER']
 
-#itera sobre as empresas
-for indice, linha in empresas.iterrows():
-    comp = linha['Competência']
-    cod_er = linha['Código ER']
-    ################################################################################################################################
-    # Tela 1
-    # Abrir o navegador, entrar no site https://www.dominioweb.com.br/ e realizar o login
-    # Use as credenciais:
-    # 	- user: usuarioteste@teste.com
-    # 	- password: Uteste@123!
-
-    # Configuração do driver
+def open_browser(url_start_path):
     driver = webdriver.Chrome()
+    pyautogui.shortcut('winleft','up')
+    driver.get(url_start_path)
+    time.sleep(2)
 
-    # URL da página a ser aberta
-    url = "https://www.dominioweb.com.br/"
-    driver.get(url)
+    return driver
+################################################################################################################################
+# Tela 1
 
-    time.sleep(1)
+driver = open_browser("https://www.dominioweb.com.br/")
 
+try:
+    tela_login = pyautogui.locateCenterOnScreen('tela_login.png')
     #credenciais
     user = 'usuarioteste@teste.com'
     password = 'Uteste@123!'
@@ -42,146 +36,199 @@ for indice, linha in empresas.iterrows():
     user_field.send_keys(user) #preenche o campo de usuário
     password_field.send_keys(password)#preenche o campo de senha
     enter_btn.click() #clica no botão de entrar
-    ################################################################################################################################
-    # Tela 2
-    # Login concluído e abrindo o programa Domínio no computador
     time.sleep(2)
-    ################################################################################################################################
-    # Tela 3
-    # Menu de opções do Domínio
-    # Selecionar a opção de Escrita Fiscal
 
-    #cria uma váriavel pra selecionar a escrita fiscal e clica
-    escrita_fiscal = driver.find_element(By.XPATH, "caminho para o elemento")
-    escrita_fiscal.click()
-    ################################################################################################################################
-    # Tela 4
-    # Janela de Login
-    # Utilize as credenciais:
-    # 	- user: Gerente
-    # 	- password: teste@123
+except pyautogui.ImageNotFoundException:
+    print('TELA DE LOGIN NAO CARREGADA')
+    exit()
 
-    #credenciais pra um novo login
+# Login concluído e abrindo o programa Domínio no computador
+pyautogui.press('winleft')
+pyautogui.write('Domínio')
+pyautogui.press('enter')
+
+time.sleep(2)
+################################################################################################################################
+# Tela 3
+
+try:
+    tela_dominio_web= pyautogui.locateCenterOnScreen('tela_dominio_web.png')
+    icone_escrita_fiscal= pyautogui.locateCenterOnScreen('escrita_fiscal.png')
+    pyautogui.doubleClick(icone_escrita_fiscal)
+    time.sleep(2)
+
+except FileNotFoundError:
+    print('IMAGEM NAO ENCONTRADA')
+    exit()
+
+except pyautogui.ImageNotFoundException:
+    print('TELA DOMINIO WEB NAO ENCONTRADA')
+    exit()
+
+ ################################################################################################################################
+# Tela 4
+# Janela de Login
+# Utilize as credenciais:
+
+try:
     user_manager = 'Gerente'
     password_manager = 'teste@123'
-
-    #cria uma variável com os novos campos de login
-    user_manager_field = driver.find_element(By.XPATH, "camnho para o elemento nome de usuário")
-    password_manager_field = driver.find_element(By.XPATH, "camnho para o elemento senha")
-    enter_manager_btn = driver.find_element(By.XPATH, "/camnho para o elemento OK(botao)")
-
-    # #preenche os campos e clica
-    user_manager_field.send_keys(user)
-    password_manager_field.send_keys(password)
-    enter_manager_btn.click()
-
+    tela_login_escrita_fiscal =  pyautogui.locateCenterOnScreen('login_escrita_fiscal.png')
+    user_manager_input = pyautogui.locateCenterOnScreen('user_manager_input.png')
+    pyautogui.click(user_manager_input)
+    pyautogui.write(user_manager)
+    pyautogui.press('tab')
+    pyautogui.write(password_manager)
     time.sleep(2)
-    ################################################################################################################################
-    # Tela 5
-    # Login realizado e programa Domínio dentro da área fiscal
-    ################################################################################################################################
-    # Tela 6
-    # Apertar f8 para abrir a janela de seleção de empresa
-    # Escolher a opção código
-    # Digitar o código da empresa com base na planilha
-    # Ativar a empresa
+except FileNotFoundError:
+    print('IMAGEM NAO ENCONTRADA')
+    exit()
 
-    #abrir menu
-    pyautogui.press('f8')
+except pyautogui.ImageNotFoundException:
+    print('TELA LOGIN NAO ENCONTRADA')
+    exit()
+ ################################################################################################################################
+# Tela 5
+# Login realizado e programa Domínio dentro da área fiscal
 
-    #seleciona a opcao Código
-    cod_radio = user_manager_field = driver.find_element(By.XPATH, "camnho para o elemento radio(Código)")
-    cod_radio.click()
+tela_escrita_fiscal =  pyautogui.locateCenterOnScreen('scrita_fiscal.png')
+time.sleep(2)
+################################################################################################################################
+# Tela 6
+# Apertar f8 para abrir a janela de seleção de empresa
+# Escolher a opção código
+# Digitar o código da empresa com base na planilha
+# Ativar a empresa
 
-    #selecionar e ativar a emrpesa
-    cod_input_box = driver.find_element(By.XPATH, "camnho para o elemento input")
-    cod_input_box.send_keys(cod_er)
-    pyautogui.shortcut('alt','a')
-    pyautogui.press('enter')
 
-    time.sleep(2)
-    ################################################################################################################################
-    # Tela 7
-    # Após ativar a empresa, no menu superior, selecionar a opção Relatórios e selecionar as demais opções conforme a imagem
+#abrir menu
+try:
+    tela_escrita_fiscal =  pyautogui.locateCenterOnScreen('scrita_fiscal.png')
+    for indice,linha in empresas.iterrows():
+        pyautogui.press('f8')
 
-    #seleciona submenus de relatorio
-    pyautogui.shortcut('alt','r')
-    pyautogui.press('n')
-    pyautogui.press('f')
-    pyautogui.press('d')
-    pyautogui.press('m')
-    time.sleep(2)
-    ################################################################################################################################
-    # Tela 8
-    # Nessa tela, será feita a exportação do relatório referente à empresa ativada anteriormente
-    # Alterar a competência conforme a planilha, alterar o caminho de onde será salvo e selecionar a opção Exportar
-    # Caminho que deverá ser escrito (altere a palavra Teste para o código da empresa na planilha):
-    # 	- M:\DCTF\Teste.RFB
+        #seleciona a opcao Código
+        cod_radio = pyautogui.locateCenterOnScreen('cod_radio.png')
+        pyautogui.click(cod_radio)
 
-    #seleciona e troca a competencia
-    competencia_field = driver.find_element(By.XPATH, "camnho para o elemento competencia")
-    competencia_field.send_keys(comp)
+        #selecionar e ativar a emrpesa
+        cod_input = pyautogui.locateCenterOnScreen('cod_input.png')
+        pyautogui.click(cod_input)
+        pyautogui.write(linha['Código ER'])
+        pyautogui.shortcut('alt','a')
+        pyautogui.press('enter')
+        time.sleep(2)
 
-    #caminho para salvar arquivo
-    file = f'{cod_er}.RFB'
-    save_path = f'M:\DCTF\{file}'
+except FileNotFoundError:
+    print('IMAGEM DE TELA NAO ENCONTRADA')
+    exit()
 
-    #seleciona o campo para digitar o caminho e digita o caminho
-    pyautogui.shortcut('alt','c')
-    pyautogui.write(save_path)
-    pyautogui.press('enter')
+except pyautogui.ImageNotFoundException:
+    print('TELA ESCRITA FISCAL NAO ENCONTRADA')
+    exit()
 
-    #exporta
-    pyautogui.shortcut('alt','x')
-    pyautogui.press('enter')
-    ################################################################################################################################
-    # Tela 9
-    # Exportação realizada com sucesso
+################################################################################################################################
+# Tela 7
+# Após ativar a empresa, no menu superior, selecionar a opção Relatórios e selecionar as demais opções conforme a imagem
 
-    #clicar em ok depois de exportado com sucesso
-    pyautogui.press('enter')
-    ################################################################################################################################
-    # Tela 10
-    # Abrir o programa DCTF
+#seleciona submenus de relatorio
+pyautogui.shortcut('alt','r')
+pyautogui.press('n')
+pyautogui.press('f')
+pyautogui.press('d')
+pyautogui.press('m')
+time.sleep(2)
+################################################################################################################################
+ # Tela 8
+# Nessa tela, será feita a exportação do relatório referente à empresa ativada anteriormente
+# Alterar a competência conforme a planilha, alterar o caminho de onde será salvo e selecionar a opção Exportar
+# Caminho que deverá ser escrito (altere a palavra Teste para o código da empresa na planilha):
+# 	- M:\DCTF\Teste.RFB
 
-    pyautogui.press('winleft')
-    pyautogui.write('DCTF')
-    pyautogui.press('enter')
-    ################################################################################################################################
-    # Tela 11
-    # No menu superior, selecionar a opção Declaração e depois a opção Importar
+#seleciona e troca a competencia
 
-    #selecionar importar
-    pyautogui.shortcut('ctrl','m')
-    ################################################################################################################################
-    # Tela 12
-    # Selecionar a opção DCTF utilizando doubleclick, escrever o nome do arquivo que foi salvo na caixa Nome do Arquivo e selecionar o botão ok
+impostos_nao_calculados = pyautogui.locateCenterOnScreen('impostos_nao_calculados.png')
+try:
+    comp_filed = pyautogui.locateCenterOnScreen('competencia.png')
+    for indice,linha in empresas.iterrows():
+        comp = linha['Competência']
+        cod_er = linha['Código ER']
+        empresa = linha['Empresa']
 
-    #selecionar DCFT baseado na posição que esta na tela
-    dcft_x = 200
-    dcft_y = 200
-    pyautogui.doubleClick(dcft_x,dcft_y)
+        pyautogui.click(comp_filed)
+        pyautogui.write(comp)
 
-    #selecionar o campo nome do arquivo
-    file_name_x = 200
-    file_name_y = 200
-    pyautogui.doubleClick(file_name_x,file_name_y)
-    pyautogui.write(file)
+        #caminho para salvar arquivo
+        file = f'{cod_er}.RFB'
+        save_path = f'M:\DCTF\{file}'
 
-    pyautogui.shortcut('alt','o')
-    pyautogui.press('enter')
-    ################################################################################################################################
-    # Tela 13
-    # Importação realizada com sucesso
-    # Clicar em ok para fechar a janela
-    # O programa voltará para a tela 12, selecionar o botão Cancelar para fechar a janela
+        #seleciona o campo para digitar o caminho e digita o caminho
+        path_filed = pyautogui.locateCenterOnScreen('caminho.png')
+        pyautogui.write(save_path)
 
-    pyautogui.press('enter')
-    ################################################################################################################################
-    # Tela 14
-    # Para abrir essa janela, o programa estará na tela 10, selecione a segunda opção em baixo do menu Declaração
-    # Selecionar a opção OK para importar o arquivo para a empresa selecionada
-    pyautogui.shortcut('ctrl','a')
-    pyautogui.shortcut('alt','o')
+        #exporta
+        pyautogui.shortcut('alt','x')
+        pyautogui.press('enter')
+
+        if impostos_nao_calculados:
+            nome_arquivo = f'{empresa}_erro.txt'
+            pyautogui.press('enter')
+
+            with open(nome_arquivo, 'w') as arquivo:
+                arquivo.write(empresa)
+
+except FileNotFoundError:
+    print('IMAGEM DA TELA NAO ENCONTRADA')
+    exit()
+
+except pyautogui.ImageNotFoundException:
+    print('TELA COMPETÊNCIA NAO ENCONTRADA')
+    exit()
+
+################################################################################################################################
+# Tela 10
+# Abrir o programa DCTF
+
+pyautogui.press('winleft')
+pyautogui.write('DCTF')
+pyautogui.press('enter')
+################################################################################################################################
+# Tela 11
+# No menu superior, selecionar a opção Declaração e depois a opção Importar
+
+linha_DCTF = pyautogui.locateCenterOnScreen('linha_DCTF.png')
+campo_nome_arquivo = pyautogui.locateCenterOnScreen('campo_nome_do_arquivo.png')
+try:
+    tela_DCTF = pyautogui.locateCenterOnScreen('tela_DCTF.png')
+    for indice, linha in empresas:
+        cod_er = linha['Código ER']
+        file = f'{cod_er}.RFB'
+
+        #selecionar importar
+        pyautogui.shortcut('ctrl','m')
+        time.sleep(1)
+        #clica na linha DCTF
+        pyautogui.doubleClick(linha_DCTF)
+        #seleciona o campo Nome do Arquivo
+        pyautogui.click(campo_nome_arquivo)
+        #escreve o nome do arquivo e aperta ok
+        pyautogui.write(file)
+        pyautogui.shortcut('alt','o')
+        pyautogui.press('enter')
+        time.sleep(5)
+        #aperta ok no caso de sucesso
+        pyautogui.press('enter')
+        pyautogui.shortcut('alt','c')
+        pyautogui.press('enter')
+        pyautogui.shortcut('ctrl','a')
+        pyautogui.shortcut('alt','o')
 
     time.sleep(5)
+
+except FileNotFoundError:
+    print('IMAGEM DA TELA NAO ENCONTRADA')
+    exit()
+
+except pyautogui.ImageNotFoundException:
+    print('TELA DCTF NAO ENCONTRADA')
+    exit()
