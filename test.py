@@ -20,7 +20,7 @@ def open_browser(url_start_path):
 ################################################################################################################################
 # Tela 1
 
-driver = open_browser("https://www.dominioweb.com.br/")
+driver = open_browser("https://www.google.com.br/")
 
 try:
     tela_login = pyautogui.locateCenterOnScreen('tela_login.png')
@@ -38,9 +38,14 @@ try:
     enter_btn.click() #clica no botão de entrar
     time.sleep(2)
 
-except pyautogui.ImageNotFoundException:
-    print('TELA DE LOGIN NAO CARREGADA')
+
+except:
+    print(f"Error ao carregar")
     exit()
+
+# except pyautogui.ImageNotFoundException:
+#     print('TELA DE LOGIN NAO CARREGADA')
+#     exit()
 
 # Login concluído e abrindo o programa Domínio no computador
 pyautogui.press('winleft')
@@ -57,13 +62,8 @@ try:
     pyautogui.doubleClick(icone_escrita_fiscal)
     time.sleep(2)
 
-except FileNotFoundError:
-    print('IMAGEM NAO ENCONTRADA')
-    exit()
-
-except pyautogui.ImageNotFoundException:
-    print('TELA DOMINIO WEB NAO ENCONTRADA')
-    exit()
+except:
+    print(f"Error ao carregar")
 
  ################################################################################################################################
 # Tela 4
@@ -80,13 +80,9 @@ try:
     pyautogui.press('tab')
     pyautogui.write(password_manager)
     time.sleep(2)
-except FileNotFoundError:
-    print('IMAGEM NAO ENCONTRADA')
-    exit()
 
-except pyautogui.ImageNotFoundException:
-    print('TELA LOGIN NAO ENCONTRADA')
-    exit()
+except:
+    print(f"Error ao carregar")
  ################################################################################################################################
 # Tela 5
 # Login realizado e programa Domínio dentro da área fiscal
@@ -119,14 +115,8 @@ try:
         pyautogui.press('enter')
         time.sleep(2)
 
-except FileNotFoundError:
-    print('IMAGEM DE TELA NAO ENCONTRADA')
-    exit()
-
-except pyautogui.ImageNotFoundException:
-    print('TELA ESCRITA FISCAL NAO ENCONTRADA')
-    exit()
-
+except:
+    print(f"Error ao carregar")
 ################################################################################################################################
 # Tela 7
 # Após ativar a empresa, no menu superior, selecionar a opção Relatórios e selecionar as demais opções conforme a imagem
@@ -177,13 +167,8 @@ try:
             with open(nome_arquivo, 'w') as arquivo:
                 arquivo.write(empresa)
 
-except FileNotFoundError:
-    print('IMAGEM DA TELA NAO ENCONTRADA')
-    exit()
-
-except pyautogui.ImageNotFoundException:
-    print('TELA COMPETÊNCIA NAO ENCONTRADA')
-    exit()
+except:
+    print(f"Error ao carregar")
 
 ################################################################################################################################
 # Tela 10
@@ -225,10 +210,5 @@ try:
 
     time.sleep(5)
 
-except FileNotFoundError:
-    print('IMAGEM DA TELA NAO ENCONTRADA')
-    exit()
-
-except pyautogui.ImageNotFoundException:
-    print('TELA DCTF NAO ENCONTRADA')
-    exit()
+except:
+    print(f"Error ao carregar")
