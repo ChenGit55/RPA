@@ -30,11 +30,17 @@ def find_image(file_name, max_attempts=5, delay=0.5):
     full_path = os.path.join(base_path, file_name)
     location = None
     for _ in range(max_attempts):
-        location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
-        if location is None:
+        try:
+            location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
+            if location is not None:
+
+                return location
+
             time.sleep(delay)
-            break
-    return location
+        except:
+            return False
+
+    return False
 
 
 driver = open_browser("https://www.dominioweb.com.br/")
@@ -144,7 +150,7 @@ try:
 
         impostos_nao_calculados = find_image("impostos_nao_calculados.png")
         if impostos_nao_calculados:
-            nome_arquivo = f"{empresa}_erro.txt"
+            nome_arquivo = f"local/ficticio/{empresa}_erro.txt"
             pyg.press("enter")
 
             with open(nome_arquivo, "w") as arquivo:
