@@ -1,13 +1,8 @@
-from gettext import find
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 import pyautogui as pyg
 import pandas as pd
 import os
-
-base_path = os.path.dirname(__file__)
-pyg.PAUSE = 1
 
 # criando data frame com uma lista de empresas
 empresas_arquivo = [
@@ -20,6 +15,7 @@ empresas = pd.DataFrame(
 )
 
 
+# configura o navegador
 def open_browser(url_start_path):
     driver = webdriver.Chrome()
     pyg.shortcut("winleft", "up")
@@ -29,10 +25,15 @@ def open_browser(url_start_path):
 
 
 # funçaao que retorna as cordenadas da imagem
-def find_image(file_name):
+def find_image(file_name, max_attempts=5, delay=0.5):
     base_path = os.path.dirname(__file__)
     full_path = os.path.join(base_path, file_name)
-    location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
+    location = None
+    for _ in range(max_attempts):
+        location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
+        if location is None:
+            time.sleep(delay)
+            break
     return location
 
 
@@ -41,8 +42,8 @@ def find_image(file_name):
 
 driver = open_browser("https://www.dominioweb.com.br/")
 time.sleep(2)
+
 try:
-    tela_login = find_image("tela_login.png")
     user_field = find_image("user_login.png")
     # credenciais
     user = "usuarioteste@teste.com"
@@ -56,7 +57,6 @@ try:
     pyg.press("tab")
     pyg.press("tab")
     pyg.press("enter")
-    time.sleep(2)
 
 except:
     print(f"Error ao carregar tela de login")
@@ -64,25 +64,24 @@ except:
 
 ################################################################################################################################
 # Tela 2
-time.sleep(1)
 ################################################################################################################################
 # Tela 3
 
+time.sleep(2)
 try:
-    tela_dominio_web = find_image("tela_dominio_web.png")
     icone_escrita_fiscal = find_image("icone_escrita_fiscal.png")
     pyg.doubleClick(icone_escrita_fiscal)
-    time.sleep(1)
 
 except:
-    print(f"Error ao carregar tela do domínio web")
+    print(f"Error ao carregar tela do painel domínio web")
+    exit()
 
 ################################################################################################################################
 # Tela 4
 
 user_manager = "Gerente"
 password_manager = "teste@123"
-
+time.sleep(2)
 try:
     tela_login_escrita_fiscal = find_image("login_escrita_fiscal.png")
     user_manager_input = find_image("user_manager_input.png")
@@ -90,15 +89,18 @@ try:
     pyg.write(user_manager)
     pyg.press("tab")
     pyg.write(password_manager)
-    time.sleep(2)
+
 
 except:
-    print(f"Error ao carregar dominio web login")
+    print(f"Error ao carregar tela de login do programa escrita fiscal")
+    exit()
+
 ################################################################################################################################
 # Tela 5
 ################################################################################################################################
 # Tela 6
 
+time.sleep(2)
 try:
     for indice, linha in empresas.iterrows():
         cod_er = linha["Código ER"]
@@ -114,10 +116,12 @@ try:
         pyg.write(cod_er)
         pyg.shortcut("alt", "a")
         pyg.press("enter")
-        time.sleep(2)
+
 
 except:
-    print(f"Error ao carregar")
+    print(f"Error ao carregar tela de troca de empresas")
+    exit()
+
 ################################################################################################################################
 # Tela 7
 
@@ -127,13 +131,14 @@ pyg.press("n")
 pyg.press("f")
 pyg.press("d")
 pyg.press("m")
-time.sleep(2)
+
 ################################################################################################################################
 # Tela 8
 
-
+time.sleep(2)
 try:
     comp_field = find_image("competencia.png")
+    path_filed = find_image("caminho.png")
     for indice, linha in empresas.iterrows():
         comp = linha["Competência"]
         cod_er = linha["Código ER"]
@@ -148,7 +153,6 @@ try:
         pyg.write(comp)
 
         # seleciona o campo para digitar o caminho e digita o caminho
-        path_filed = find_image("caminho.png")
         pyg.click(path_filed)
         pyg.write(save_path)
 
@@ -168,7 +172,9 @@ try:
                 arquivo.write(empresa)
 
 except:
-    print(f"Error ao carregar")
+    print(f"Error ao carregar exportação DCTF Mensal")
+    exit()
+
 
 ################################################################################################################################
 # Tela 10
@@ -181,6 +187,7 @@ pyg.press("enter")
 ################################################################################################################################
 # Tela 11
 
+time.sleep(2)
 try:
     tela_DCTF = find_image("tela_DCTF.png")
     linha_DCTF = find_image("linha_DCTF.png")
@@ -192,7 +199,6 @@ try:
 
         # selecionar importar
         pyg.shortcut("ctrl", "m")
-        time.sleep(1)
         # clica na linha DCTF
         pyg.doubleClick(linha_DCTF)
         # seleciona o campo Nome do Arquivo
@@ -201,7 +207,7 @@ try:
         pyg.write(file)
         pyg.shortcut("alt", "o")
         pyg.press("enter")
-        time.sleep(2)
+
         # aperta ok no caso de sucesso
         pyg.press("enter")
         pyg.shortcut("alt", "c")
@@ -209,9 +215,9 @@ try:
         pyg.shortcut("ctrl", "a")
         pyg.shortcut("alt", "o")
 
-    time.sleep(2)
 
 except:
-    print(f"Error ao carregar")
+    print(f"Error ao carregar DCTF Mensal")
+    exit()
 
 driver.quit()
