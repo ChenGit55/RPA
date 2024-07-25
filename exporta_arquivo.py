@@ -1,5 +1,5 @@
-import time
 from selenium import webdriver
+import time
 import pyautogui as pyg
 import pandas as pd
 import os
@@ -26,7 +26,7 @@ def open_browser(url_start_path):
 
 # funçaao que retorna as cordenadas da imagem
 def find_image(file_name, max_attempts=5, delay=0.5):
-    base_path = os.path.dirname(__file__)
+    base_path = os.path.dirname(__file__)  # os.getcdw()
     full_path = os.path.join(base_path, file_name)
     location = None
     for _ in range(max_attempts):
@@ -37,9 +37,6 @@ def find_image(file_name, max_attempts=5, delay=0.5):
     return location
 
 
-################################################################################################################################
-# Tela 1
-
 driver = open_browser("https://www.dominioweb.com.br/")
 time.sleep(2)
 
@@ -49,7 +46,7 @@ try:
     user = "usuarioteste@teste.com"
     password = "Uteste@123!"
 
-    # cria uma variável com os campos da tela de login
+    # preenche o campo de email e senha
     pyg.click(user_field)
     pyg.write(user)
     pyg.press("tab")
@@ -62,11 +59,7 @@ except:
     print(f"Error ao carregar tela de login")
     exit()
 
-################################################################################################################################
-# Tela 2
-################################################################################################################################
-# Tela 3
-
+# selecionar escrita fiscal
 time.sleep(2)
 try:
     icone_escrita_fiscal = find_image("icone_escrita_fiscal.png")
@@ -76,13 +69,12 @@ except:
     print(f"Error ao carregar tela do painel domínio web")
     exit()
 
-################################################################################################################################
-# Tela 4
 
-user_manager = "Gerente"
-password_manager = "teste@123"
+# escrita fiscal login
 time.sleep(2)
 try:
+    user_manager = "Gerente"
+    password_manager = "teste@123"
     tela_login_escrita_fiscal = find_image("login_escrita_fiscal.png")
     user_manager_input = find_image("user_manager_input.png")
     pyg.click(user_manager_input)
@@ -94,11 +86,6 @@ try:
 except:
     print(f"Error ao carregar tela de login do programa escrita fiscal")
     exit()
-
-################################################################################################################################
-# Tela 5
-################################################################################################################################
-# Tela 6
 
 time.sleep(2)
 try:
@@ -122,9 +109,6 @@ except:
     print(f"Error ao carregar tela de troca de empresas")
     exit()
 
-################################################################################################################################
-# Tela 7
-
 # seleciona submenus de relatorio
 pyg.shortcut("alt", "r")
 pyg.press("n")
@@ -132,9 +116,7 @@ pyg.press("f")
 pyg.press("d")
 pyg.press("m")
 
-################################################################################################################################
-# Tela 8
-
+# tela pra exportar o arquivo
 time.sleep(2)
 try:
     comp_field = find_image("competencia.png")
@@ -156,9 +138,6 @@ try:
         pyg.click(path_filed)
         pyg.write(save_path)
 
-        ################################################################################################################################
-        # Tela 09
-
         # exporta
         pyg.shortcut("alt", "x")
         pyg.press("enter")
@@ -175,17 +154,10 @@ except:
     print(f"Error ao carregar exportação DCTF Mensal")
     exit()
 
-
-################################################################################################################################
-# Tela 10
-
 # Abrir o programa DCTF
 pyg.press("winleft")
 pyg.write("DCTF")
 pyg.press("enter")
-
-################################################################################################################################
-# Tela 11
 
 time.sleep(2)
 try:
