@@ -30,13 +30,14 @@ def find_image(file_name, max_attempts=5, delay=0.5):
     full_path = os.path.join(base_path, file_name)
     location = None
     for _ in range(max_attempts):
-        try:
-            location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
-            if location is not None:
 
+        try:
+            time.sleep(delay)
+            location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
+
+            if location is not None:
                 return location
 
-            time.sleep(delay)
         except:
             return False
 
@@ -94,9 +95,17 @@ except:
     exit()
 
 time.sleep(2)
-try:
-    for indice, linha in empresas.iterrows():
-        cod_er = linha["Código ER"]
+for indice, linha in empresas.iterrows():
+    competencia = linha["Competência"]
+    cod_er = linha["Código ER"]
+    empresa = linha["Empresa"]
+
+    # caminho para salvar arquivo
+    file = f"{cod_er}.RFB"
+    save_path = f"M:\DCTF\{file}"
+
+    # altera a empresa
+    try:
         pyg.press("f8")
 
         # seleciona a opcao Código
@@ -109,36 +118,28 @@ try:
         pyg.write(cod_er)
         pyg.shortcut("alt", "a")
         pyg.press("enter")
+    except:
+        print(f"Error ao carregar tela de troca de empresas")
+        exit()
 
+    tela_export_DCTF = find_image("tela_export_DCTF.png")
+    # abre o menu DCTF mensal caso nao esteja aberto
+    if not tela_export_DCTF:
+        pyg.shortcut("alt", "r")
+        pyg.press("n")
+        pyg.press("f")
+        pyg.press("d")
+        pyg.press("m")
 
-except:
-    print(f"Error ao carregar tela de troca de empresas")
-    exit()
-
-# seleciona submenus de relatorio
-pyg.shortcut("alt", "r")
-pyg.press("n")
-pyg.press("f")
-pyg.press("d")
-pyg.press("m")
-
-# tela pra exportar o arquivo
-time.sleep(2)
-try:
-    comp_field = find_image("competencia.png")
-    path_filed = find_image("caminho.png")
-    for indice, linha in empresas.iterrows():
-        comp = linha["Competência"]
-        cod_er = linha["Código ER"]
-        empresa = linha["Empresa"]
-
-        # caminho para salvar arquivo
-        file = f"{cod_er}.RFB"
-        save_path = f"M:\DCTF\{file}"
+    # tela pra exportar o arquivo
+    time.sleep(2)
+    try:
+        comp_field = find_image("competencia.png")
+        path_filed = find_image("caminho.png")
 
         # seleciona e troca a competencia
         pyg.click(comp_field)
-        pyg.write(comp)
+        pyg.write(competencia)
 
         # seleciona o campo para digitar o caminho e digita o caminho
         pyg.click(path_filed)
@@ -155,10 +156,9 @@ try:
 
             with open(nome_arquivo, "w") as arquivo:
                 arquivo.write(empresa)
-
-except:
-    print(f"Error ao carregar exportação DCTF Mensal")
-    exit()
+    except:
+        print(f"Error ao importar DCTF Mensal")
+        exit()
 
 # Abrir o programa DCTF
 pyg.press("winleft")
