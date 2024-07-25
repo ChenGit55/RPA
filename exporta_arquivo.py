@@ -24,37 +24,32 @@ def open_browser(url_start_path):
     return driver
 
 
-# funçaao que retorna as cordenadas da imagem
-def find_image(file_name, max_attempts=5, delay=0.5):
+def click_on_image(file_name, max_attempts=5, delay=0.5, double=False):
     base_path = os.path.dirname(__file__)  # os.getcdw()
     full_path = os.path.join(base_path, file_name)
     location = None
     for _ in range(max_attempts):
-
-        try:
-            time.sleep(delay)
-            location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
-
-            if location is not None:
-                return location
-
-        except:
-            return False
-
-    return False
+        time.sleep(delay)
+        location = pyg.locateCenterOnScreen(full_path, confidence=0.7)
+        if location is not None:
+            if double:
+                pyg.doubleClick(location)
+            else:
+                pyg.click(location)
+            return location
 
 
 driver = open_browser("https://www.dominioweb.com.br/")
 time.sleep(2)
 
 try:
-    user_field = find_image("user_login.png")
+    # user_field = find_image("user_login.png")
     # credenciais
     user = "usuarioteste@teste.com"
     password = "Uteste@123!"
 
     # preenche o campo de email e senha
-    pyg.click(user_field)
+    click_on_image("user_login.png")
     pyg.write(user)
     pyg.press("tab")
     pyg.write(password)
@@ -69,26 +64,21 @@ except:
 # selecionar escrita fiscal
 time.sleep(2)
 try:
-    icone_escrita_fiscal = find_image("icone_escrita_fiscal.png")
-    pyg.doubleClick(icone_escrita_fiscal)
+    click_on_image("icone_escrita_fiscal.png")
 
 except:
     print(f"Error ao carregar tela do painel domínio web")
     exit()
-
 
 # escrita fiscal login
 time.sleep(2)
 try:
     user_manager = "Gerente"
     password_manager = "teste@123"
-    tela_login_escrita_fiscal = find_image("login_escrita_fiscal.png")
-    user_manager_input = find_image("user_manager_input.png")
-    pyg.click(user_manager_input)
+    click_on_image("user_manager_input.png")
     pyg.write(user_manager)
     pyg.press("tab")
     pyg.write(password_manager)
-
 
 except:
     print(f"Error ao carregar tela de login do programa escrita fiscal")
@@ -107,14 +97,8 @@ for indice, linha in empresas.iterrows():
     # altera a empresa
     try:
         pyg.press("f8")
-
-        # seleciona a opcao Código
-        cod_radio = find_image("cod_radio.png")
-        pyg.click(cod_radio)
-
         # selecionar e ativar a emrpesa
-        cod_input = find_image("cod_input.png")
-        pyg.click(cod_input)
+        click_on_image("cod_input.png")
         pyg.write(cod_er)
         pyg.shortcut("alt", "a")
         pyg.press("enter")
@@ -122,40 +106,40 @@ for indice, linha in empresas.iterrows():
         print(f"Error ao carregar tela de troca de empresas")
         exit()
 
-    tela_export_DCTF = find_image("tela_export_DCTF.png")
     # abre o menu DCTF mensal caso nao esteja aberto
-    if not tela_export_DCTF:
-        pyg.shortcut("alt", "r")
-        pyg.press("n")
-        pyg.press("f")
-        pyg.press("d")
-        pyg.press("m")
+    pyg.shortcut("alt", "r")
+    pyg.press("n")
+    pyg.press("f")
+    pyg.press("d")
+    pyg.press("m")
 
     # tela pra exportar o arquivo
     time.sleep(2)
     try:
-        comp_field = find_image("competencia.png")
-        path_filed = find_image("caminho.png")
-
         # seleciona e troca a competencia
-        pyg.click(comp_field)
+        click_on_image("competencia.png")
         pyg.write(competencia)
 
         # seleciona o campo para digitar o caminho e digita o caminho
-        pyg.click(path_filed)
+        click_on_image("caminho.png")
         pyg.write(save_path)
 
         # exporta
         pyg.shortcut("alt", "x")
         pyg.press("enter")
 
-        impostos_nao_calculados = find_image("impostos_nao_calculados.png")
-        if impostos_nao_calculados:
+        # em caso de erro salva um arquivo de texto com o nome da empresa
+        try:
+            click_on_image("impostos_nao_calculados.png")
             nome_arquivo = f"local/ficticio/{empresa}_erro.txt"
-            pyg.press("enter")
-
             with open(nome_arquivo, "w") as arquivo:
                 arquivo.write(empresa)
+
+        except:
+            pass
+
+        pyg.press("enter")
+        pyg.shortcut("alt", "f4")
     except:
         print(f"Error ao importar DCTF Mensal")
         exit()
@@ -167,10 +151,6 @@ pyg.press("enter")
 
 time.sleep(2)
 try:
-    tela_DCTF = find_image("tela_DCTF.png")
-    linha_DCTF = find_image("linha_DCTF.png")
-    campo_nome_arquivo = find_image("campo_nome_do_arquivo.png")
-
     for indice, linha in empresas:
         cod_er = linha["Código ER"]
         file = f"{cod_er}.RFB"
@@ -178,21 +158,20 @@ try:
         # selecionar importar
         pyg.shortcut("ctrl", "m")
         # clica na linha DCTF
-        pyg.doubleClick(linha_DCTF)
+        click_on_image("linha_DCTF.png", double=True)
         # seleciona o campo Nome do Arquivo
-        pyg.click(campo_nome_arquivo)
+        click_on_image("campo_nome_do_arquivo.png")
         # escreve o nome do arquivo e aperta ok
         pyg.write(file)
         pyg.shortcut("alt", "o")
         pyg.press("enter")
-
-        # aperta ok no caso de sucesso
+        # aperta ok e cancel pra fechar a janela
         pyg.press("enter")
         pyg.shortcut("alt", "c")
         pyg.press("enter")
+        # importa para emresa selecionada
         pyg.shortcut("ctrl", "a")
         pyg.shortcut("alt", "o")
-
 
 except:
     print(f"Error ao carregar DCTF Mensal")
